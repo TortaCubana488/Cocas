@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Cocas en el Refri</title>
+    <style>
+        body {
+            background-color: #fdf5f5;
+            color: #333;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding-top: 10vh;
+            margin: 0;
+        }
+        .contenedor {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: inline-block;
+            max-width: 90%;
+        }
+        h1 {
+            color: #F40009; /* Rojo estilo Coca-Cola */
+            margin-top: 0;
+            font-size: 28px;
+        }
+        .numero {
+            font-size: 120px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #111;
+        }
+        .btn-admin {
+            background-color: #111;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 20px;
+        }
+        .btn-admin:hover {
+            background-color: #F40009;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor">
+        <h1>🥤 Cocas en el refri</h1>
+        
+        <div class="numero" id="contadorCocas">0</div>
+        
+        <button class="btn-admin" onclick="actualizarContador()">Actualizar Inventario</button>
+    </div>
+
+    <script>
+        // 1. Definir la palabra secreta (Cámbiala por la que tú quieras)
+        const PALABRA_SECRETA = "hielofrio";
+
+        // 2. Al cargar la página, buscar si ya hay un número guardado en el navegador
+        let cocasActuales = localStorage.getItem('cocasGuardadas');
+        
+        // Si no hay nada guardado, empezamos en 0
+        if (cocasActuales === null) {
+            cocasActuales = 0;
+        }
+        
+        // Mostrar el número en la pantalla
+        document.getElementById('contadorCocas').innerText = cocasActuales;
+
+        // 3. Función que se ejecuta al presionar el botón
+        function actualizarContador() {
+            // Pedir contraseña
+            let intento = prompt("🔒 Acceso de Administrador. Ingresa la palabra secreta:");
+
+            if (intento === PALABRA_SECRETA) {
+                // Si la contraseña es correcta, pedir el nuevo número
+                let nuevoNumero = prompt("Contraseña correcta ✅. ¿Cuántas cocas hay en el refri ahora?");
+                
+                // Validar que sí se haya escrito algo y que sea un número
+                if (nuevoNumero !== null && nuevoNumero.trim() !== "" && !isNaN(nuevoNumero)) {
+                    // Actualizar en la pantalla
+                    document.getElementById('contadorCocas').innerText = nuevoNumero;
+                    // Guardar en el almacenamiento del navegador
+                    localStorage.setItem('cocasGuardadas', nuevoNumero);
+                    alert("¡Contador actualizado a " + nuevoNumero + " cocas!");
+                } else {
+                    alert("❌ Operación cancelada: No ingresaste un número válido.");
+                }
+            } else if (intento !== null) {
+                // Si escribió algo pero está mal
+                alert("❌ Palabra secreta incorrecta. No puedes modificar el contador.");
+            }
+        }
+    </script>
+</body>
+</html>
