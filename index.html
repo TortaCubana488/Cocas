@@ -10,7 +10,7 @@
             color: #333;
             font-family: 'Arial', sans-serif;
             text-align: center;
-            padding-top: 10vh;
+            padding-top: 5vh;
             margin: 0;
         }
         .contenedor {
@@ -20,28 +20,54 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             display: inline-block;
             max-width: 90%;
+            width: 600px;
         }
         h1 {
-            color: #F40009; /* Rojo estilo Coca-Cola */
+            color: #111;
             margin-top: 0;
             font-size: 28px;
+            margin-bottom: 30px;
+        }
+        .contadores-wrapper {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .caja-contador {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+            min-width: 150px;
+            border: 2px solid #eee;
+        }
+        h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+        .titulo-generales {
+            color: #F40009; /* Rojo Coca-Cola normal */
+        }
+        .titulo-emi {
+            color: #000000; /* Negro para diferenciar las de Emi */
         }
         .numero {
-            font-size: 120px;
+            font-size: 80px;
             font-weight: bold;
-            margin: 20px 0;
+            margin: 10px 0;
             color: #111;
         }
         .btn-admin {
             background-color: #111;
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 15px 30px;
             font-size: 16px;
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.3s;
-            margin-top: 20px;
+            font-weight: bold;
         }
         .btn-admin:hover {
             background-color: #F40009;
@@ -51,49 +77,62 @@
 <body>
 
     <div class="contenedor">
-        <h1>🥤 Cocas en el refri</h1>
+        <h1>🥤 Control del Refri</h1>
         
-        <div class="numero" id="contadorCocas">0</div>
+        <div class="contadores-wrapper">
+            <div class="caja-contador">
+                <h2 class="titulo-generales">Generales</h2>
+                <div class="numero" id="contadorGenerales">0</div>
+            </div>
+
+            <div class="caja-contador">
+                <h2 class="titulo-emi">De Emi</h2>
+                <div class="numero" id="contadorEmi">0</div>
+            </div>
+        </div>
         
         <button class="btn-admin" onclick="actualizarContador()">Actualizar Inventario</button>
     </div>
 
     <script>
-        // 1. Definir la palabra secreta (Cámbiala por la que tú quieras)
+        // 1. Palabra secreta
         const PALABRA_SECRETA = "hielofrio";
 
-        // 2. Al cargar la página, buscar si ya hay un número guardado en el navegador
-        let cocasActuales = localStorage.getItem('cocasGuardadas');
+        // 2. Cargar datos guardados (si no hay, empiezan en 0)
+        let cocasGenerales = localStorage.getItem('cocasGenerales') || 0;
+        let cocasEmi = localStorage.getItem('cocasEmi') || 0;
         
-        // Si no hay nada guardado, empezamos en 0
-        if (cocasActuales === null) {
-            cocasActuales = 0;
-        }
-        
-        // Mostrar el número en la pantalla
-        document.getElementById('contadorCocas').innerText = cocasActuales;
+        // Mostrar los números al cargar la página
+        document.getElementById('contadorGenerales').innerText = cocasGenerales;
+        document.getElementById('contadorEmi').innerText = cocasEmi;
 
-        // 3. Función que se ejecuta al presionar el botón
+        // 3. Función de actualización
         function actualizarContador() {
-            // Pedir contraseña
             let intento = prompt("🔒 Acceso de Administrador. Ingresa la palabra secreta:");
 
             if (intento === PALABRA_SECRETA) {
-                // Si la contraseña es correcta, pedir el nuevo número
-                let nuevoNumero = prompt("Contraseña correcta ✅. ¿Cuántas cocas hay en el refri ahora?");
                 
-                // Validar que sí se haya escrito algo y que sea un número
-                if (nuevoNumero !== null && nuevoNumero.trim() !== "" && !isNaN(nuevoNumero)) {
-                    // Actualizar en la pantalla
-                    document.getElementById('contadorCocas').innerText = nuevoNumero;
-                    // Guardar en el almacenamiento del navegador
-                    localStorage.setItem('cocasGuardadas', nuevoNumero);
-                    alert("¡Contador actualizado a " + nuevoNumero + " cocas!");
-                } else {
-                    alert("❌ Operación cancelada: No ingresaste un número válido.");
+                // Pedir actualización para Generales (Muestra el número actual por defecto)
+                let inputGenerales = prompt("✅ Contraseña correcta.\n\n¿Cuántas Cocas GENERALES hay ahora?", cocasGenerales);
+                
+                if (inputGenerales !== null && inputGenerales.trim() !== "" && !isNaN(inputGenerales)) {
+                    cocasGenerales = inputGenerales;
+                    document.getElementById('contadorGenerales').innerText = cocasGenerales;
+                    localStorage.setItem('cocasGenerales', cocasGenerales);
                 }
+
+                // Pedir actualización para las de Emi (Muestra el número actual por defecto)
+                let inputEmi = prompt("¿Y cuántas Cocas DE EMI hay ahora?", cocasEmi);
+                
+                if (inputEmi !== null && inputEmi.trim() !== "" && !isNaN(inputEmi)) {
+                    cocasEmi = inputEmi;
+                    document.getElementById('contadorEmi').innerText = cocasEmi;
+                    localStorage.setItem('cocasEmi', cocasEmi);
+                }
+
+                alert("¡Inventario actualizado correctamente!");
+
             } else if (intento !== null) {
-                // Si escribió algo pero está mal
                 alert("❌ Palabra secreta incorrecta. No puedes modificar el contador.");
             }
         }
